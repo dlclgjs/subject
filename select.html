@@ -36,10 +36,16 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-right: 10px;  /* 버튼 간 간격 추가 */
         }
         button:hover {
             background-color: #005bb5;
         }   
+        /* 버튼들을 같은 줄에 배치 */
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -48,11 +54,11 @@
             <br> 
             <strong>C</strong>ERTIFICATION <strong>S</strong>YSTEM</h4>
 
-        <!-- "좌석 인증" 버튼을 클릭하면 로그인 페이지로 이동 -->
-        <button onclick="https://dlclgjs.github.io/subject2/login.html">좌석 인증</button>
-        <br><br>
-        <!-- "좌석 확인" 버튼을 클릭하면 좌석 정보 페이지로 이동 -->
-        <button onclick="https://dlclgjs.github.io/subject1/seatInfo.html">좌석 확인</button>
+        <!-- 버튼들을 같은 줄에 배치 -->
+        <div class="button-container">
+            <button onclick="window.location.href='https://dlclgjs.github.io/subject2/login.html'">좌석 인증</button>
+            <button onclick="window.location.href='https://dlclgjs.github.io/subject1/seatInfo.html'">좌석 확인</button>
+        </div>
     </div>
 </body>
 </html>
