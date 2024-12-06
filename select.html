@@ -29,6 +29,11 @@
         .login_box h4 strong {
             color: #FFA500;
         }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px; /* 버튼 사이에 간격을 줍니다 */
+        }
         button {
             padding: 10px 20px;
             background-color: #0066cc;
@@ -36,10 +41,11 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 48%; /* 버튼 너비를 같은 비율로 설정 */
         }
         button:hover {
             background-color: #005bb5;
-        }   
+        }
     </style>
 </head>
 <body>
@@ -48,11 +54,14 @@
             <br> 
             <strong>C</strong>ERTIFICATION <strong>S</strong>YSTEM</h4>
 
-        <!-- "좌석 인증" 버튼을 클릭하면 로그인 페이지로 이동 -->
-        <button onclick="location.href='https://dlclgjs.github.io/subject2/login.html';">좌석 인증</button>
-        <br><br>
-        <!-- "좌석 확인" 버튼을 클릭하면 좌석 정보 페이지로 이동 -->
-        <button onclick="location.href='https://dlclgjs.github.io/subject1/seatInfo.html';">좌석 확인</button>
+        <!-- 버튼을 포함하는 div -->
+        <div class="button-container">
+            <!-- "좌석 인증" 버튼을 클릭하면 로그인 페이지로 이동 -->
+            <button onclick="location.href='https://dlclgjs.github.io/subject2/login.html';">좌석 인증</button>
+            
+            <!-- "좌석 확인" 버튼을 클릭하면 좌석 정보 페이지로 이동 -->
+            <button onclick="location.href='https://dlclgjs.github.io/subject1/seatInfo.html';">좌석 확인</button>
+        </div>
     </div>
 </body>
 </html>
