@@ -1,114 +1,182 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>층별 잔여 좌석 현황</title>
+    <title>DAEGU UNIVERSITY LIBRARY CERTIFICATION SYSTEM</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            background-color: #eaeaee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login_box {
+            background-color: #4ec0e0;
+            padding: 20px;
+            width: 450px;
+            text-align: center;
+            border: 4px solid white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .login_box h4 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: white;
+        }
+        .login_box h4 strong {
+            color: #FFA500;
         }
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
         }
-        th, td {
-            border: 1px solid #ccc;
-            text-align: center;
+        td {
             padding: 10px;
         }
-        th {
-            background-color: #f4f4f4;
+        label {
+            color: white;
+            font-size: 14px;
         }
-        caption {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            font-weight: bold;
-            text-align: center;
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 70%;
+            box-sizing: border-box;
+            font-size: 14px;
+            margin-left: 60;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005bb5;
         }
     </style>
     <script>
-        // 좌석 데이터를 가져오고 만료된 데이터를 제거하는 함수
-        function getSeatData() {
-            const data = JSON.parse(localStorage.getItem("seatData"));
-            if (!data) return {};  // 데이터가 없으면 빈 객체 반환
+        function authenticate() {
+            const floor = document.getElementById("floor").value;
+            const seatType = document.getElementById("seatType").value;
 
-            const currentTime = new Date().getTime();
-            const updatedData = {};  // 만료된 데이터를 제거한 새 데이터 저장
-
-            for (let floor in data) {
-                updatedData[floor] = {};
-                for (let seatType in data[floor]) {
-                    const seat = data[floor][seatType];
-                    const elapsedTime = currentTime - seat.timestamp;
-
-                    if (elapsedTime > 90 * 60 * 1000) {  // 90분 이상 경과한 경우
-                        // 만료된 데이터는 0으로 초기화
-                        updatedData[floor][seatType] = { current: 0, total: seat.total, timestamp: seat.timestamp };
-                    } else {
-                        updatedData[floor][seatType] = { ...seat }; // 최신 데이터 유지
-                    }
-                }
-            }
-
-            // 새 데이터를 로컬스토리지에 저장
-            localStorage.setItem("seatData", JSON.stringify(updatedData));
-            return updatedData;
-        }
-
-        // 테이블 행을 생성하는 함수
-        function generateTableRows() {
-            const seatData = getSeatData();  // 갱신된 좌석 데이터 가져오기
-            const tableBody = document.getElementById("seats-table-body");
-            tableBody.innerHTML = "";  // 기존 데이터 초기화
-
-            if (Object.keys(seatData).length === 0) {
-                const noDataRow = document.createElement("tr");
-                noDataRow.innerHTML = "<td colspan='4'>데이터가 없습니다</td>";
-                tableBody.appendChild(noDataRow);
+            if (!floor || !seatType) {
+                alert("층과 좌석 유형을 선택하세요.");
                 return;
             }
 
-            for (const floor in seatData) {
-                const floorData = seatData[floor];
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${floor}</td>
-                    <td>${floorData.disabled ? `${floorData.disabled.current}/${floorData.disabled.total}` : "N/A"}</td>
-                    <td>${floorData.plug ? `${floorData.plug.current}/${floorData.plug.total}` : "N/A"}</td>
-                    <td>${floorData.regular ? `${floorData.regular.current}/${floorData.regular.total}` : "N/A"}</td>
-                `;
-                tableBody.appendChild(row);
+            const seatData = JSON.parse(localStorage.getItem("seatData"));
+            const seatMap = {
+                "장애인석": "disabled",
+                "콘센트석": "plug",
+                "일반석": "regular"
+            };
+
+            if (seatData[floor] && seatMap[seatType]) {
+                seatData[floor][seatMap[seatType]].current++;
+                seatData[floor][seatMap[seatType]].timestamp = new Date().getTime(); // timestamp 추가
+                localStorage.setItem("seatData", JSON.stringify(seatData));
+                alert(`${floor} ${seatType}에 인증되었습니다.`);
+            } else {
+                alert("올바르지 않은 선택입니다.");
             }
         }
 
-        // 페이지 로드 시 테이블 생성
-        window.onload = function () {
-            generateTableRows(); // 테이블 생성
-        };
+        function validateForm() {
+            const studentID = document.getElementById("StudentID").value;
+            const password = document.getElementById("pw").value;
+            const floor = document.getElementById("floor").value;
+            const seatType = document.getElementById("seat_type").value;
+
+            if (studentID === "") {
+                alert("ID를 입력하여 주십시오.");
+                return false;
+            }
+
+            if (studentID.length !== 8 || isNaN(studentID)) {
+                alert("학번은 8자리 숫자로 입력하여 주십시오.");
+                return false;
+            }
+
+            if (password === "") {
+                alert("PASSWORD를 입력하여 주십시오.");
+                return false;
+            }
+
+            if (floor === "") {
+                alert("층/열람실을 선택하세요.");
+                return false;
+            }
+
+            if (seatType === "") {
+                alert("좌석 유형을 선택하세요.");
+                return false;
+            }
+
+            const selectedData = { floor, seatType };
+            localStorage.setItem("seatSelection", JSON.stringify(selectedData));
+            window.location.href = "https://dlclgjs.github.io/subject/seatInfo.html";  // seatInfo.html로 이동
+            return false;
+        }
     </script>
 </head>
 <body>
-    <h1>층별 잔여 좌석 현황</h1>
-
-    <table>
-        <caption>
-            <div class="caption-container" style="display: flex; justify-content: space-between; align-items: center; padding: 0 10px;">
-                <span>1층 ~ 5층 좌석 현황</span>
-                <span>(현재/총)</span>
-            </div>
-        </caption>
-        <thead>
-            <tr>
-                <th>층</th>
-                <th>장애인석</th>
-                <th>콘센트석</th>
-                <th>일반석</th>
-            </tr>
-        </thead>
-        <tbody id="seats-table-body"></tbody>
-    </table>
+    <div class="login_box">
+        <h4><strong>D</strong>AEGU <strong>U</strong>NIVERSITY <strong>L</strong>IBRARY<br>
+            <strong>C</strong>ERTIFICATION <strong>S</strong>YSTEM</h4>
+        <form onsubmit="return validateForm();">
+            <table>
+                <tr>
+                    <td><label for="StudentID">학번:</label></td>
+                    <td><input type="text" id="StudentID" name="StudentID"></td>
+                </tr>
+                <tr>
+                    <td><label for="password">비밀번호:</label></td>
+                    <td><input type="password" id="pw" name="pw"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="floor">층/열람실 선택:</label>
+                        <select id="floor" name="floor">
+                            <option value="">선택하세요</option>
+                            <option value="1층">1층</option>
+                            <option value="2층">2층</option>
+                            <option value="3층">3층</option>
+                            <option value="4층">4층</option>
+                            <option value="1열람실">1열람실</option>
+                            <option value="2열람실">2열람실</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="seat_type">좌석 유형 선택:</label>
+                        <select id="seat_type" name="seat_type">
+                            <option value="">선택하세요</option>
+                            <option value="장애인석">장애인석</option>
+                            <option value="콘센트석">콘센트석</option>
+                            <option value="일반석">일반석</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="submit">인증</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </body>
 </html>
