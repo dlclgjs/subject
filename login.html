@@ -76,21 +76,27 @@
                 return;
             }
 
-            const seatData = JSON.parse(localStorage.getItem("seatData"));
+            const seatData = JSON.parse(localStorage.getItem("seatData")) || {};
             const seatMap = {
                 "장애인석": "disabled",
                 "콘센트석": "plug",
                 "일반석": "regular"
             };
 
-            if (seatData[floor] && seatMap[seatType]) {
-                seatData[floor][seatMap[seatType]].current++;
-                seatData[floor][seatMap[seatType]].timestamp = new Date().getTime(); // timestamp 추가
-                localStorage.setItem("seatData", JSON.stringify(seatData));
-                alert(`${floor} ${seatType}에 인증되었습니다.`);
-            } else {
-                alert("올바르지 않은 선택입니다.");
+            if (!seatData[floor]) {
+                seatData[floor] = {
+                    disabled: { current: 0, total: 10, timestamp: new Date().getTime() },
+                    plug: { current: 0, total: 10, timestamp: new Date().getTime() },
+                    regular: { current: 0, total: 10, timestamp: new Date().getTime() }
+                };
             }
+
+            seatData[floor][seatMap[seatType]].current++;
+            seatData[floor][seatMap[seatType]].timestamp = new Date().getTime(); // timestamp 추가
+            localStorage.setItem("seatData", JSON.stringify(seatData));
+
+            alert(`${floor} ${seatType}에 인증되었습니다.`);
+            window.location.href = "seatInfo.html";  // seatInfo.html로 이동
         }
 
         function validateForm() {
@@ -124,9 +130,7 @@
                 return false;
             }
 
-            const selectedData = { floor, seatType };
-            localStorage.setItem("seatSelection", JSON.stringify(selectedData));
-            window.location.href = "https://dlclgjs.github.io/subject/seatInfo.html";  // seatInfo.html로 이동
+            authenticate();  // 인증 함수 호출
             return false;
         }
     </script>
