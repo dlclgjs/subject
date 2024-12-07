@@ -30,65 +30,57 @@
         }
     </style>
     <script>
-    function generateTableRows() {
-            const seatData = getSeatData();  // 만료된 항목 삭제 후 갱신된 데이터 가져오기
+        // 좌석 데이터를 가져오고 만료된 데이터를 제거하는 함수
+        function getSeatData() {
+            const data = JSON.parse(localStorage.getItem("seatData"));
+            if (!data) return {};  // 데이터가 없으면 빈 객체 반환
+
+            const currentTime = new Date().getTime();
+            const updatedData = {};  // 만료된 데이터를 제거한 새 데이터 저장
+
+            for (let floor in data) {
+                updatedData[floor] = {};
+                for (let seatType in data[floor]) {
+                    const seat = data[floor][seatType];
+                    const elapsedTime = currentTime - seat.timestamp;
+
+                    if (elapsedTime > 90 * 60 * 1000) {
+                        updatedData[floor][seatType] = { current: 0, total: seat.total, timestamp: seat.timestamp };
+                    } else {
+                        updatedData[floor][seatType] = { ...seat };
+                    }
+                }
+            }
+
+            // 새 데이터를 로컬스토리지에 저장
+            localStorage.setItem("seatData", JSON.stringify(updatedData));
+            return updatedData;
+        }
+
+        // 테이블 행을 생성하는 함수
+        function generateTableRows() {
+            const seatData = getSeatData();  // 갱신된 좌석 데이터 가져오기
             const tableBody = document.getElementById("seats-table-body");
             tableBody.innerHTML = "";  // 기존 데이터 초기화
 
             for (const floor in seatData) {
+                const floorData = seatData[floor];
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${floor}</td>
-                    <td>${seatData[floor].disabled ? seatData[floor].disabled.current : 0}/${seatData[floor].disabled.total}</td>
-                    <td>${seatData[floor].plug ? seatData[floor].plug.current : 0}/${seatData[floor].plug.total}</td>
-                    <td>${seatData[floor].regular ? seatData[floor].regular.current : 0}/${seatData[floor].regular.total}</td>
+                    <td>${floorData.disabled ? `${floorData.disabled.current}/${floorData.disabled.total}` : "N/A"}</td>
+                    <td>${floorData.plug ? `${floorData.plug.current}/${floorData.plug.total}` : "N/A"}</td>
+                    <td>${floorData.regular ? `${floorData.regular.current}/${floorData.regular.total}` : "N/A"}</td>
                 `;
                 tableBody.appendChild(row);
             }
         }
 
-        const currentTime = new Date().getTime();
-        const updatedData = {};
-
-        for (let floor in data) {
-            updatedData[floor] = {};
-            for (let seatType in data[floor]) {
-                const seat = data[floor][seatType];
-                const elapsedTime = currentTime - seat.timestamp;
-
-                if (elapsedTime > 90 * 60 * 1000) {
-                    updatedData[floor][seatType] = { current: 0, total: seat.total, timestamp: seat.timestamp };
-                } else {
-                    updatedData[floor][seatType] = { ...seat };
-                }
-            }
-        }
-
-        localStorage.setItem("seatData", JSON.stringify(updatedData));
-        return updatedData;
-
-    function generateTableRows() {
-        const seatData = getSeatData();
-        const tableBody = document.getElementById("seats-table-body");
-        tableBody.innerHTML = "";
-
-        for (const floor in seatData) {
-            const floorData = seatData[floor];
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${floor}</td>
-                <td>${floorData.disabled ? `${floorData.disabled.current}/${floorData.disabled.total}` : "N/A"}</td>
-                <td>${floorData.plug ? `${floorData.plug.current}/${floorData.plug.total}` : "N/A"}</td>
-                <td>${floorData.regular ? `${floorData.regular.current}/${floorData.regular.total}` : "N/A"}</td>
-            `;
-            tableBody.appendChild(row);
-        }
-    }
-
-    window.onload = function () {
-        generateTableRows();
-    };
-</script>
+        // 페이지 로드 시 테이블 생성
+        window.onload = function () {
+            generateTableRows();
+        };
+    </script>
 </head>
 <body>
     <h1>층별 잔여 좌석 현황</h1>
