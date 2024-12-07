@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>층별 잔여 좌석 현황</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 10px;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        caption {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+    <script>
+        function getSeatData() {
+            const data = JSON.parse(localStorage.getItem("seatData"));
+            if (!data) return null;
+
+            const currentTime = new Date().getTime();
+            const expiredData = {}; // 만료된 데이터를 담을 객체
+
+            for (let floor in data) {
+                for (let seatType in data[floor]) {
+                    const seat = data[floor][seatType];
+                    const elapsedTime = currentTime - seat.timestamp;
+
+                    if (elapsedTime > 90 * 60 * 1000) {  // 90분 경과한 경우
+                        expiredData[floor] = expiredData[floor] || {};
+                        expiredData[floor][seatType] = null;  // 만료된 항목은 null로 설정
+                    } else {
+                        expiredData[floor] = expiredData[floor] || {};
+                        expiredData[floor][seatType] = seat;  // 만료되지 않은 항목은 그대로 저장
+                    }
+                }
+            }
+
+            localStorage.setItem("seatData", JSON.stringify(expiredData));  // 만료된 항목을 제외한 새 데이터를 저장
+            return expiredData;
+        }
+
+        function generateTableRows() {
+            const seatData = getSeatData();  // 만료된 항목 삭제 후 갱신된 데이터 가져오기
+            const tableBody = document.getElementById("seats-table-body");
+            tableBody.innerHTML = "";  // 기존 데이터 초기화
+
+            for (const floor in seatData) {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${floor}</td>
+                    <td>${seatData[floor].disabled ? seatData[floor].disabled.current : 0}/${seatData[floor].disabled.total}</td>
+                    <td>${seatData[floor].plug ? seatData[floor].plug.current : 0}/${seatData[floor].plug.total}</td>
+                    <td>${seatData[floor].regular ? seatData[floor].regular.current : 0}/${seatData[floor].regular.total}</td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+
+        window.onload = function () {
+            generateTableRows(); // 페이지 로드 시 테이블 생성
+        };
+    </script>
+</head>
+<body>
+    <h1>층별 잔여 좌석 현황</h1>
+
+    <table>
+        <caption>
+            <div class="caption-container" style="display: flex; justify-content: space-between; align-items: center; padding: 0 10px;">
+                <span>1층 ~ 5층 좌석 현황</span>
+                <span>(현재/총)</span>
+            </div>
+        </caption>
+        <thead>
+            <tr>
+                <th>층</th>
+                <th>장애인석</th>
+                <th>콘센트석</th>
+                <th>일반석</th>
+            </tr>
+        </thead>
+        <tbody id="seats-table-body"></tbody>
+    </table>
+</body>
+</html>
