@@ -33,6 +33,7 @@
         // 좌석 데이터를 가져오고 만료된 데이터를 제거하는 함수
         function getSeatData() {
             const data = JSON.parse(localStorage.getItem("seatData"));
+            console.log("Seat Data:", data); // 데이터 확인용 로그
             if (!data) return {};  // 데이터가 없으면 빈 객체 반환
 
             const currentTime = new Date().getTime();
