@@ -56,10 +56,15 @@
                         plug: { current: 0, total: 5, timestamp: new Date().getTime() },
                         regular: { current: 0, total: 10, timestamp: new Date().getTime() }
                     },
-                    "5층": {
-                        disabled: { current: 0, total: 5, timestamp: new Date().getTime() },
-                        plug: { current: 0, total: 5, timestamp: new Date().getTime() },
-                        regular: { current: 0, total: 10, timestamp: new Date().getTime() }
+                    "1열람실": {
+                        disabled: { current: 0, total: 6, timestamp: new Date().getTime() },
+                        plug: { current: 0, total: 24, timestamp: new Date().getTime() },
+                        regular: { current: 0, total: 368, timestamp: new Date().getTime() }
+                    },
+                    "2열람실": {
+                        disabled: { current: 0, total: 11, timestamp: new Date().getTime() },
+                        plug: { current: 0, total: 18, timestamp: new Date().getTime() },
+                        regular: { current: 0, total: 312, timestamp: new Date().getTime() }
                     }
                 };
                 localStorage.setItem("seatData", JSON.stringify(data));  // 기본 데이터 저장
