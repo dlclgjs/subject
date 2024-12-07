@@ -37,14 +37,34 @@
             // 기본 데이터 초기화
             data = {
                 "1층": {
-                    disabled: { current: 2, total: 5, timestamp: new Date().getTime() },
-                    plug: { current: 3, total: 10, timestamp: new Date().getTime() },
-                    regular: { current: 7, total: 20, timestamp: new Date().getTime() }
+                    disabled: { current: 0, total: 5, timestamp: new Date().getTime() },
+                    plug: { current: 0, total: 10, timestamp: new Date().getTime() },
+                    regular: { current: 0, total: 20, timestamp: new Date().getTime() }
                 },
                 "2층": {
-                    disabled: { current: 1, total: 5, timestamp: new Date().getTime() },
-                    plug: { current: 4, total: 12, timestamp: new Date().getTime() },
-                    regular: { current: 10, total: 25, timestamp: new Date().getTime() }
+                    disabled: { current: 0, total: 5, timestamp: new Date().getTime() },
+                    plug: { current: 0, total: 12, timestamp: new Date().getTime() },
+                    regular: { current: 0, total: 25, timestamp: new Date().getTime() }
+                }
+                "3층": {
+                    disabled: { current: 0, total: 5, timestamp: new Date().getTime() },
+                    plug: { current: 0, total: 12, timestamp: new Date().getTime() },
+                    regular: { current: 0, total: 25, timestamp: new Date().getTime() }
+                }
+                "4층": {
+                    disabled: { current: 0, total: 5, timestamp: new Date().getTime() },
+                    plug: { current: 0, total: 12, timestamp: new Date().getTime() },
+                    regular: { current: 0, total: 25, timestamp: new Date().getTime() }
+                }
+                "1열람실": {
+                    disabled: { current: 0, total: 6, timestamp: new Date().getTime() },
+                    plug: { current: 0, total: 24, timestamp: new Date().getTime() },
+                    regular: { current: 0, total: 368, timestamp: new Date().getTime() }
+                }
+                "2열람실": {
+                    disabled: { current: 0, total: 6, timestamp: new Date().getTime() },
+                    plug: { current: 0, total: 24, timestamp: new Date().getTime() },
+                    regular: { current: 0, total: 368, timestamp: new Date().getTime() }
                 }
             };
             localStorage.setItem("seatData", JSON.stringify(data));
