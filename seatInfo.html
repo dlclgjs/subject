@@ -30,69 +30,69 @@
         }
     </style>
     <script>
-        function getSeatData() {
-    let data = JSON.parse(localStorage.getItem("seatData"));
+    function getSeatData() {
+        let data = JSON.parse(localStorage.getItem("seatData"));
 
-    if (!data) {
-        // 기본 데이터 초기화
-        data = {
-            "1층": {
-                disabled: { current: 2, total: 5, timestamp: new Date().getTime() },
-                plug: { current: 3, total: 10, timestamp: new Date().getTime() },
-                regular: { current: 7, total: 20, timestamp: new Date().getTime() }
-            },
-            "2층": {
-                disabled: { current: 1, total: 5, timestamp: new Date().getTime() },
-                plug: { current: 4, total: 12, timestamp: new Date().getTime() },
-                regular: { current: 10, total: 25, timestamp: new Date().getTime() }
-            }
-        };
-        localStorage.setItem("seatData", JSON.stringify(data));
-    }
-
-    const currentTime = new Date().getTime();
-    const expiredData = {}; // 만료된 데이터를 담을 객체
-
-    for (let floor in data) {
-        for (let seatType in data[floor]) {
-            const seat = data[floor][seatType];
-            const elapsedTime = currentTime - seat.timestamp;
-
-            if (elapsedTime > 90 * 60 * 1000) { // 90분 경과한 경우
-                expiredData[floor] = expiredData[floor] || {};
-                expiredData[floor][seatType] = null; // 만료된 항목은 null로 설정
-            } else {
-                expiredData[floor] = expiredData[floor] || {};
-                expiredData[floor][seatType] = seat; // 만료되지 않은 항목은 그대로 저장
-            }
+        if (!data) {
+            // 기본 데이터 초기화
+            data = {
+                "1층": {
+                    disabled: { current: 2, total: 5, timestamp: new Date().getTime() },
+                    plug: { current: 3, total: 10, timestamp: new Date().getTime() },
+                    regular: { current: 7, total: 20, timestamp: new Date().getTime() }
+                },
+                "2층": {
+                    disabled: { current: 1, total: 5, timestamp: new Date().getTime() },
+                    plug: { current: 4, total: 12, timestamp: new Date().getTime() },
+                    regular: { current: 10, total: 25, timestamp: new Date().getTime() }
+                }
+            };
+            localStorage.setItem("seatData", JSON.stringify(data));
         }
-    }
 
-    localStorage.setItem("seatData", JSON.stringify(expiredData)); // 만료된 항목을 제외한 새 데이터를 저장
-    return expiredData;
-}
+        const currentTime = new Date().getTime();
+        const updatedData = {}; // 업데이트된 데이터를 담을 객체
 
-        function generateTableRows() {
-            const seatData = getSeatData();  // 만료된 항목 삭제 후 갱신된 데이터 가져오기
-            const tableBody = document.getElementById("seats-table-body");
-            tableBody.innerHTML = "";  // 기존 데이터 초기화
+        for (let floor in data) {
+            updatedData[floor] = {};
+            for (let seatType in data[floor]) {
+                const seat = data[floor][seatType];
+                const elapsedTime = currentTime - seat.timestamp;
 
-            for (const floor in seatData) {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${floor}</td>
-                    <td>${seatData[floor].disabled ? seatData[floor].disabled.current : 0}/${seatData[floor].disabled.total}</td>
-                    <td>${seatData[floor].plug ? seatData[floor].plug.current : 0}/${seatData[floor].plug.total}</td>
-                    <td>${seatData[floor].regular ? seatData[floor].regular.current : 0}/${seatData[floor].regular.total}</td>
-                `;
-                tableBody.appendChild(row);
+                if (elapsedTime > 90 * 60 * 1000) { // 90분 경과한 경우 기본값으로 초기화
+                    updatedData[floor][seatType] = { current: 0, total: 0, timestamp: 0 };
+                } else {
+                    updatedData[floor][seatType] = seat; // 만료되지 않은 항목은 그대로 저장
+                }
             }
         }
 
-        window.onload = function () {
-            generateTableRows(); // 페이지 로드 시 테이블 생성
-        };
-    </script>
+        localStorage.setItem("seatData", JSON.stringify(updatedData)); // 갱신된 데이터를 저장
+        return updatedData;
+    }
+
+    function generateTableRows() {
+        const seatData = getSeatData(); // 만료된 항목 삭제 후 갱신된 데이터 가져오기
+        const tableBody = document.getElementById("seats-table-body");
+        tableBody.innerHTML = ""; // 기존 데이터 초기화
+
+        for (const floor in seatData) {
+            const floorData = seatData[floor];
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${floor}</td>
+                <td>${floorData.disabled.current}/${floorData.disabled.total}</td>
+                <td>${floorData.plug.current}/${floorData.plug.total}</td>
+                <td>${floorData.regular.current}/${floorData.regular.total}</td>
+            `;
+            tableBody.appendChild(row);
+        }
+    }
+
+    window.onload = function () {
+        generateTableRows(); // 페이지 로드 시 테이블 생성
+    };
+</script>
 </head>
 <body>
     <h1>층별 잔여 좌석 현황</h1>
