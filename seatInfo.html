@@ -30,6 +30,43 @@
         }
     </style>
     <script>
+        // 샘플 데이터 설정 (로컬 스토리지에 저장)
+        function setSampleData() {
+            const sampleData = {
+                "1층": {
+                    "disabled": { current: 0, total: 10, timestamp: new Date().getTime() },
+                    "plug": { current: 0, total: 10, timestamp: new Date().getTime() },
+                    "regular": { current: 0, total: 10, timestamp: new Date().getTime() }
+                },
+                "2층": {
+                    "disabled": { current: 0, total: 10, timestamp: new Date().getTime() },
+                    "plug": { current: 0, total: 10, timestamp: new Date().getTime() },
+                    "regular": { current: 0, total: 10, timestamp: new Date().getTime() }
+                },
+                "3층": {
+                    "disabled": { current: 0, total: 10, timestamp: new Date().getTime() },
+                    "plug": { current: 0, total: 10, timestamp: new Date().getTime() },
+                    "regular": { current: 0, total: 10, timestamp: new Date().getTime() }
+                },
+                "4층": {
+                    "disabled": { current: 0, total: 10, timestamp: new Date().getTime() },
+                    "plug": { current: 0, total: 10, timestamp: new Date().getTime() },
+                    "regular": { current: 0, total: 10, timestamp: new Date().getTime() }
+                },
+                "1열람실": {
+                    "disabled": { current: 0, total: 6, timestamp: new Date().getTime() },
+                    "plug": { current: 0, total: 24, timestamp: new Date().getTime() },
+                    "regular": { current: 0, total: 368, timestamp: new Date().getTime() }
+                },
+                "2열람실": {
+                    "disabled": { current: 0, total: 11, timestamp: new Date().getTime() },
+                    "plug": { current: 0, total: 18, timestamp: new Date().getTime() },
+                    "regular": { current: 0, total: 312, timestamp: new Date().getTime() }
+                }
+            };
+            localStorage.setItem("seatData", JSON.stringify(sampleData));
+        }
+
         // 좌석 데이터를 가져오고 만료된 데이터를 제거하는 함수
         function getSeatData() {
             const data = JSON.parse(localStorage.getItem("seatData"));
@@ -63,6 +100,13 @@
             const tableBody = document.getElementById("seats-table-body");
             tableBody.innerHTML = "";  // 기존 데이터 초기화
 
+            if (Object.keys(seatData).length === 0) {
+                const noDataRow = document.createElement("tr");
+                noDataRow.innerHTML = "<td colspan='4'>데이터가 없습니다</td>";
+                tableBody.appendChild(noDataRow);
+                return;
+            }
+
             for (const floor in seatData) {
                 const floorData = seatData[floor];
                 const row = document.createElement("tr");
@@ -76,9 +120,10 @@
             }
         }
 
-        // 페이지 로드 시 테이블 생성
+        // 페이지 로드 시 샘플 데이터를 설정하고 테이블 생성
         window.onload = function () {
-            generateTableRows();
+            setSampleData(); // 샘플 데이터 설정 (한 번만 실행하면 됨)
+            generateTableRows(); // 테이블 생성
         };
     </script>
 </head>
