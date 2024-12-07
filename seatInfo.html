@@ -30,20 +30,21 @@
         }
     </style>
     <script>
-    function getSeatData() {
-        let data = JSON.parse(localStorage.getItem("seatData"));
+    function generateTableRows() {
+            const seatData = getSeatData();  // 만료된 항목 삭제 후 갱신된 데이터 가져오기
+            const tableBody = document.getElementById("seats-table-body");
+            tableBody.innerHTML = "";  // 기존 데이터 초기화
 
-        if (!data) {
-            // 기본 데이터 초기화
-            data = {
-                "1층": { disabled: { current: 0, total: 5, timestamp: new Date().getTime() }, plug: { current: 0, total: 12, timestamp: new Date().getTime() }, regular: { current: 0, total: 25, timestamp: new Date().getTime() } },
-                "2층": { disabled: { current: 0, total: 5, timestamp: new Date().getTime() }, plug: { current: 0, total: 12, timestamp: new Date().getTime() }, regular: { current: 0, total: 25, timestamp: new Date().getTime() } },
-                "3층": { disabled: { current: 0, total: 5, timestamp: new Date().getTime() }, plug: { current: 0, total: 12, timestamp: new Date().getTime() }, regular: { current: 0, total: 25, timestamp: new Date().getTime() } },
-                "4층": { disabled: { current: 0, total: 5, timestamp: new Date().getTime() }, plug: { current: 0, total: 12, timestamp: new Date().getTime() }, regular: { current: 0, total: 25, timestamp: new Date().getTime() } },
-                "1열람실": { disabled: { current: 0, total: 6, timestamp: new Date().getTime() }, plug: { current: 0, total: 24, timestamp: new Date().getTime() }, regular: { current: 0, total: 368, timestamp: new Date().getTime() } },
-                "2열람실": { disabled: { current: 0, total: 6, timestamp: new Date().getTime() }, plug: { current: 0, total: 24, timestamp: new Date().getTime() }, regular: { current: 0, total: 368, timestamp: new Date().getTime() } }
-            };
-            localStorage.setItem("seatData", JSON.stringify(data));
+            for (const floor in seatData) {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${floor}</td>
+                    <td>${seatData[floor].disabled ? seatData[floor].disabled.current : 0}/${seatData[floor].disabled.total}</td>
+                    <td>${seatData[floor].plug ? seatData[floor].plug.current : 0}/${seatData[floor].plug.total}</td>
+                    <td>${seatData[floor].regular ? seatData[floor].regular.current : 0}/${seatData[floor].regular.total}</td>
+                `;
+                tableBody.appendChild(row);
+            }
         }
 
         const currentTime = new Date().getTime();
@@ -65,7 +66,6 @@
 
         localStorage.setItem("seatData", JSON.stringify(updatedData));
         return updatedData;
-    }
 
     function generateTableRows() {
         const seatData = getSeatData();
