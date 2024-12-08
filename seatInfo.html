@@ -44,9 +44,9 @@
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${data.floor}</td>
-                <td>${data.seatType}</td>
-                <td>${data.current}</td>
-                <td>${data.total}</td>
+                <td>${data.disabled.current}/${data.disabled.total}</td>
+                <td>${data.plug.current}/${data.plug.total}</td>
+                <td>${data.regular.current}/${data.regular.total}</td>
             `;
             tableBody.appendChild(row);
         }
