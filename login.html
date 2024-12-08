@@ -97,7 +97,6 @@
             seatData[floor][seatMap[seatType]].timestamp = new Date().getTime(); // timestamp 추가
             localStorage.setItem("seatData", JSON.stringify(seatData));
 
-            alert(`${floor} ${seatType}에 인증되었습니다.`);
         }
 
         // 폼 유효성 검사
@@ -185,11 +184,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <label for="check">자리 정리 동의</label>
-                        <input type="checkbox" id="check" name="checkbox" value="checkbox">
-                    </td>
-                </tr>
+                    <td colspan="2" style="text-align: left;">
+                        <label for="check" style="color: white; font-size: 16px; display: inline-flex; align-items: center;">
+                            자리 정리 동의
+                        </label>
+                        <input type="checkbox" id="check" name="checkbox" value="checkbox" style="margin-left: 8px;">
+                </tr>  
                 <tr>
                     <td colspan="2" style="text-align: center;">
                         <button type="submit">인증</button>
