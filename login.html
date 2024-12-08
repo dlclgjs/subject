@@ -106,6 +106,7 @@
             const password = document.getElementById("pw").value;
             const floor = document.getElementById("floor").value;
             const seatType = document.getElementById("seat_type").value;
+            const checkbox = document.getElementById("check").checked;
 
             if (studentID === "") {
                 alert("ID를 입력하여 주십시오.");
@@ -132,6 +133,11 @@
                 return false;
             }
 
+            if (!checkbox) {
+                alert("장시간 방치 시 자리 정리에 동의하셔야 합니다.");
+                return false;
+            }
+
             authenticate();  // 인증 함수 호출
             // 유효성 검사가 성공하면 이동
             window.location.href = "https://dlclgjs.github.io/subject/ALERT.html";
@@ -151,7 +157,7 @@
                 </tr>
                 <tr>
                     <td><label for="password">비밀번호:</label></td>
-                    <td><input type="password" id="pw" name="pw"></td>
+                    <td><input type="password" id="password" name="password"></td>
                 </tr>
                 <tr>
                     <td colspan="2">
@@ -172,12 +178,13 @@
                         <label for="seat_type">좌석 유형 선택:</label>
                         <select id="seat_type" name="seat_type">
                             <option value="">선택하세요</option>
-                            <option value="장애인석">장애인석</option>
-                            <option value="콘센트석">콘센트석</option>
-                            <option value="일반석">일반석</option>
                         </select>
                     </td>
                 </tr>
+                <tr>
+                    <td><label for="SeatClean">자리 정리 동의</label></td>
+                    <td><input type="checkbox" id="SeatClean" name="SeatClean"></td>
+                </tr>                
                 <tr>
                     <td colspan="2" style="text-align: center;">
                         <button type="submit">인증</button>
