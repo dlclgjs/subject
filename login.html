@@ -69,6 +69,45 @@
     <script>
         const socket = io();
 
+        // Validate the form inputs and then authenticate
+        function validateForm() {
+            const studentID = document.getElementById("StudentID").value;
+            const password = document.getElementById("pw").value;
+            const floor = document.getElementById("floor").value;
+            const seatType = document.getElementById("seat_type").value;
+            const checkbox = document.getElementById("check").checked;
+
+            // Validation checks
+            if (studentID === "") {
+                alert("ID를 입력하여 주십시오.");
+                return false;
+            }
+            if (studentID.length !== 8 || isNaN(studentID)) {
+                alert("학번은 8자리 숫자로 입력하여 주십시오.");
+                return false;
+            }
+            if (password === "") {
+                alert("PASSWORD를 입력하여 주십시오.");
+                return false;
+            }
+            if (floor === "") {
+                alert("층/열람실을 선택하세요.");
+                return false;
+            }
+            if (seatType === "") {
+                alert("좌석 유형을 선택하세요.");
+                return false;
+            }
+            if (!checkbox) {
+                alert("장시간 방치 시 자리 정리에 동의하셔야 합니다.");
+                return false;
+            }
+
+            authenticate();  // 인증 함수 호출
+            window.location.href = "https://dlclgjs.github.io/subject/ALERT.html";  // Redirect after authentication
+            return false;  // Prevent form submission
+        }
+
         // Handle seat authentication and updates
         function authenticate() {
             const floor = document.getElementById("floor").value;
@@ -105,7 +144,6 @@
             });
 
             alert(`${floor} ${seatType}에 인증되었습니다.`);
-            window.location.href = "https://dlclgjs.github.io/subject/ALERT.html";
         }
     </script>
 </head>
