@@ -39,8 +39,9 @@
         });
 
         function updateSeatTable(data) {
-            // Update the seat data table with the new data
             const tableBody = document.getElementById("seats-table-body");
+
+            // Create a new row with the updated data
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${data.floor}</td>
@@ -48,6 +49,8 @@
                 <td>${data.plug.current}/${data.plug.total}</td>
                 <td>${data.regular.current}/${data.regular.total}</td>
             `;
+
+            // Append the row to the table body
             tableBody.appendChild(row);
         }
 
@@ -56,9 +59,19 @@
             fetch('/seatData')
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach(seat => {
-                        updateSeatTable(seat);
-                    });
+                    if (data.length === 0) {
+                        const tableBody = document.getElementById("seats-table-body");
+                        const row = document.createElement("tr");
+                        row.innerHTML = `<td colspan="4">좌석 정보가 없습니다.</td>`;
+                        tableBody.appendChild(row);
+                    } else {
+                        data.forEach(seat => {
+                            updateSeatTable(seat);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("좌석 데이터를 가져오는 데 오류가 발생했습니다.", error);
                 });
         };
     </script>
@@ -81,7 +94,9 @@
                 <th>일반석</th>
             </tr>
         </thead>
-        <tbody id="seats-table-body"></tbody>
+        <tbody id="seats-table-body">
+            <!-- 좌석 데이터가 동적으로 여기에 추가됨 -->
+        </tbody>
     </table>
 </body>
 </html>
