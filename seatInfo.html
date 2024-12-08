@@ -107,12 +107,12 @@
             for (const floor in seatData) {
                 const floorData = seatData[floor];
                 const row = document.createElement("tr");
-                row.innerHTML = 
+                row.innerHTML = `
                     <td>${floor}</td>
-                    <td>${floorData.disabled ? ${floorData.disabled.current}/${floorData.disabled.total} : "N/A"}</td>
-                    <td>${floorData.plug ? ${floorData.plug.current}/${floorData.plug.total} : "N/A"}</td>
-                    <td>${floorData.regular ? ${floorData.regular.current}/${floorData.regular.total} : "N/A"}</td>
-                ;
+                    <td>${floorData.disabled ? `${floorData.disabled.current}/${floorData.disabled.total}` : "N/A"}</td>
+                    <td>${floorData.plug ? `${floorData.plug.current}/${floorData.plug.total}` : "N/A"}</td>
+                    <td>${floorData.regular ? `${floorData.regular.current}/${floorData.regular.total}` : "N/A"}</td>
+                `;
                 tableBody.appendChild(row);
             }
         }
