@@ -52,7 +52,6 @@
             width: 70%;
             box-sizing: border-box;
             font-size: 14px;
-            margin-left: 60;
         }
         button {
             padding: 10px 20px;
@@ -99,7 +98,6 @@
             localStorage.setItem("seatData", JSON.stringify(seatData));
 
             alert(`${floor} ${seatType}에 인증되었습니다.`);
-            window.location.href = "seatInfo.html";  // seatInfo.html로 이동
         }
 
         // 폼 유효성 검사
@@ -135,7 +133,9 @@
             }
 
             authenticate();  // 인증 함수 호출
-            return false;
+            // 유효성 검사가 성공하면 이동
+            window.location.href = "https://dlclgjs.github.io/subject/ALERT.html";
+            return false; // 폼 기본 제출 방지
         }
     </script>
 </head>
