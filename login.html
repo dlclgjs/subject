@@ -103,10 +103,10 @@
         // 폼 유효성 검사
         function validateForm() {
             const studentID = document.getElementById("StudentID").value;
-            const password = document.getElementById("pw").value; // ID 수정
+            const password = document.getElementById("pw").value;
             const floor = document.getElementById("floor").value;
             const seatType = document.getElementById("seat_type").value;
-            const checkbox = document.getElementById("check").checked; // ID 수정
+            const checkbox = document.getElementById("check").checked;
 
             if (studentID === "") {
                 alert("ID를 입력하여 주십시오.");
@@ -139,7 +139,6 @@
             }
 
             authenticate();  // 인증 함수 호출
-            // 유효성 검사가 성공하면 이동
             window.location.href = "https://dlclgjs.github.io/subject/ALERT.html";
             return false; // 폼 기본 제출 방지
         }
@@ -156,7 +155,7 @@
                     <td><input type="text" id="StudentID" name="StudentID"></td>
                 </tr>
                 <tr>
-                    <td><label for="pw">비밀번호:</label></td> <!-- ID 수정 -->
+                    <td><label for="pw">비밀번호:</label></td>
                     <td><input type="password" id="pw" name="pw"></td>
                 </tr>
                 <tr>
@@ -185,7 +184,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label for="check">자리 정리 동의</label></td> <!-- ID 수정 -->
+                    <td><label for="check">자리 정리 동의</label></td>
                     <td><input type="checkbox" id="check" name="check"></td>
                 </tr>
                 <tr>
