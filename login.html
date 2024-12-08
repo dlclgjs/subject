@@ -65,8 +65,11 @@
             background-color: #005bb5;
         }
     </style>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-        // 좌석 인증 처리 함수
+        const socket = io();
+
+        // Handle seat authentication and updates
         function authenticate() {
             const floor = document.getElementById("floor").value;
             const seatType = document.getElementById("seat_type").value;
@@ -83,64 +86,26 @@
                 "일반석": "regular"
             };
 
-            // 해당 층에 대한 데이터가 없으면 기본값으로 초기화
             if (!seatData[floor]) {
                 seatData[floor] = {
-                    disabled: { current: 0, total: 10, timestamp: new Date().getTime() },
-                    plug: { current: 0, total: 10, timestamp: new Date().getTime() },
-                    regular: { current: 0, total: 10, timestamp: new Date().getTime() }
+                    disabled: { current: 0, total: 10 },
+                    plug: { current: 0, total: 10 },
+                    regular: { current: 0, total: 10 }
                 };
             }
 
-            // 해당 좌석 유형의 현재 예약 수 증가
             seatData[floor][seatMap[seatType]].current++;
-            seatData[floor][seatMap[seatType]].timestamp = new Date().getTime(); // timestamp 추가
             localStorage.setItem("seatData", JSON.stringify(seatData));
 
+            // Emit seat update to server
+            socket.emit('seatUpdate', {
+                floor,
+                seatType,
+                current: seatData[floor][seatMap[seatType]].current
+            });
+
             alert(`${floor} ${seatType}에 인증되었습니다.`);
-        }
-
-        // 폼 유효성 검사
-        function validateForm() {
-            const studentID = document.getElementById("StudentID").value;
-            const password = document.getElementById("pw").value;
-            const floor = document.getElementById("floor").value;
-            const seatType = document.getElementById("seat_type").value;
-            const checkbox = document.getElementById("check").checked;
-
-            if (studentID === "") {
-                alert("ID를 입력하여 주십시오.");
-                return false;
-            }
-
-            if (studentID.length !== 8 || isNaN(studentID)) {
-                alert("학번은 8자리 숫자로 입력하여 주십시오.");
-                return false;
-            }
-
-            if (password === "") {
-                alert("PASSWORD를 입력하여 주십시오.");
-                return false;
-            }
-
-            if (floor === "") {
-                alert("층/열람실을 선택하세요.");
-                return false;
-            }
-
-            if (seatType === "") {
-                alert("좌석 유형을 선택하세요.");
-                return false;
-            }
-
-            if (!checkbox) {
-                alert("장시간 방치 시 자리 정리에 동의하셔야 합니다.");
-                return false;
-            }
-
-            authenticate();  // 인증 함수 호출
             window.location.href = "https://dlclgjs.github.io/subject/ALERT.html";
-            return false; // 폼 기본 제출 방지
         }
     </script>
 </head>
